@@ -31,7 +31,7 @@ var FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 var FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 var FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL;
 
-var INSTAGRAM_ACCESS_TOKEN = "";
+//var INSTAGRAM_ACCESS_TOKEN = "";
 Instagram.set('client_id', INSTAGRAM_CLIENT_ID);
 Instagram.set('client_secret', INSTAGRAM_CLIENT_SECRET);
 
@@ -104,7 +104,7 @@ passport.use(new FacebookStrategy({
     models.User.findOrCreate({
       "name": profile.name,
       "id": profile.id,
-      "access_token": accessToken 
+      "fb_access_token": accessToken 
     }, function(err, user, created) {
       superuser = user;
       // created will be true here
@@ -167,46 +167,57 @@ app.get('/login', function(req, res){
 
 
 app.get('/fbphotos', ensureAuthenticated, function(req, res){
-var tempRes;
-  Facebook.get('/me/photos?access_token=' + superuser.access_token,
-    function(err, response){
-      tempRes = response.data[0].images[4].source;
-      var tempJSON ={
-        im1: response.data[0].images[5].source,
-        im2: response.data[2].images[5].source,
-        im3: response.data[9].images[5].source,
-        im4: response.data[8].images[5].source,
-        im5: response.data[3].images[5].source,
-        im6: response.data[16].images[5].source,
-        im7: response.data[20].images[5].source,
-        im8: response.data[10].images[5].source,
-        im9: response.data[5].images[5].source
-      };
-      /*
-      for(var i = 0; i < 10; i++){
-        //console.log(response.data[i].images[4].source);
-        tempJSON.im = response.data[i].images[4].source;
-      }
-      */
-        console.log(tempJSON.im1);
-        console.log(parseInt(Math.random()*10));
-     //console.log(response.data[].images);
-      res.render('fbphotos', {user: req.user, superuser: superuser, picture: tempJSON});
-      //console.log(tempRes);
+if(req.user){
+      console.log(superuser.fb_access_token);
+      Facebook.get('/me/photos?access_token=' + superuser.fb_access_token, 
+      function(err, response) {
+        //console.log(response);
+        var imageArr = [];
+        
+        for (var i = 0; i < response.data.length; i++) {
+          var item = response.data[i];
+
+
+          // Get some metadata about the photo and save it all to 'imageArr'
+          var tempJSON = {};
+          tempJSON.image_url = item.source;
+          tempJSON.link = item.link;
+          tempJSON.provider = 'Facebook';
+
+          if (item.name) {
+            tempJSON.caption = item.name;
+          } else {
+            tempJSON.caption = null;
+          }
+          if (item.from.id == superuser.id) {
+            tempJSON.from = 'You';
+          } else {
+            tempJSON.from = item.from.name;
+          }
+
+          var date = new Date(item.created_time);
+          tempJSON.timestamp = date.getTime();
+          tempJSON.day = date.getDate();
+          tempJSON.month = date.getMonth() + 1;
+          tempJSON.year = date.getFullYear();
+          imageArr.push(tempJSON);
+        }
+          res.render('fbphotos', {photo: imageArr});
     });
-  //post hella shit to fb account
+  };
 });
 
 
 
-
-app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['user_photos'] }));
 
     app.get('/auth/facebook/callback',
         passport.authenticate('facebook', {
             successRedirect : '/fbphotos',
             failureRedirect : '/'
         }));
+
+    
 
 app.get('/photos', ensureAuthenticated, function(req, res){
   var query  = models.User.where({ name: req.user.username });

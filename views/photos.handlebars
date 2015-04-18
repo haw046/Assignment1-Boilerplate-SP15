@@ -1,4 +1,63 @@
+<style>
+.img {
+  width: 30vw;
+  height: 40vh;
+  background-position: 50% 50%;
+    margin:0px;
+    text-align:center;
+    padding:1px;
+  }
+
+.wrapper{
+width:400px;
+float:left;
+display:inline-block;
+}
+
+.caption {
+    position: relative;
+    overflow: hidden;
+}
+.caption__media {
+    display: block;
+    min-width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+.caption__overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    color: white;
+    transform: translateY(100%);
+    transition: transform .35s ease-out;
+}
+.caption:hover .caption__overlay {
+    transform: translateY(0);
+}
+
+  
+}
+</style>
+
+
+<center class="wrapper" class="img">
 {{#each photos}}
-  <img src="{{url}}" class="img-responsive" class="img hashtag-img">
-  <p> {{caption}} </p>
-{{/each}}
+<article class="caption">
+    <img class="caption__media" src="{{url}}" class="img-responsive" class="img hashtag-img"/>
+    <div class="caption__overlay">
+        <h1 class="caption__overlay">{{caption}}</h1g>
+    </div>
+</article>
+{{/each}} 
+</center>
+
+
+
+
+
+
+

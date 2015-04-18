@@ -1,44 +1,25 @@
+<div class="container">
 
-<style>
+  <div class="section center-align">
+    <h3>You're all set</h3>
+  </div>
 
-img {
-	width: 30vw;
-	height: 30vh;
-	background-position: 50% 50%;
-	}
+  <div class="row">
+    <div class="col s12 m8 offset-m2 l6 offset-l3">
 
-body{
-	background-color: #0033CC;
-}
+      <div class="card">
+        <div class="card-content">              
+          <div class="row valign-wrapper" style="margin-bottom: 0px">
+            <div class="col s3">
+              <img src="images/facebookCircle.png" alt="FB" class="responsive-img">
+            </div>
+            <div class="col s9">
+              <span class="card-title black-text">{{name}}</span>
+              <p class="truncate">{{description}}</p>
+            </div>                
+          </div>
+        </div>
+      </div>
 
-
-.mycss
-{
-	font-weight:bold;
-	color:#FFFFFF;
-	letter-spacing:4pt;
-	word-spacing:-6pt;
-	font-size:47px;
-	text-align:center;
-	font-family:arial, helvetica, sans-serif;line-height:1;
-}
-
-
-</style>
-
-<body>
-<p class = "mycss">{{user.displayName}}'s Picture Collage</p>
-
-<center>
-<img src="{{picture.im1}}">
-<img src="{{picture.im2}}">
-<img src="{{picture.im3}}">
-<img src="{{picture.im4}}">
-<img src="{{picture.im5}}">
-<img src="{{picture.im6}}">
-<img src="{{picture.im7}}">
-<img src="{{picture.im8}}">
-<img src="{{picture.im9}}">
-</center>
-</body>
-
+    </div>
+  </div>
